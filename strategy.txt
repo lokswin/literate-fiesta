@@ -1,4 +1,7 @@
-Выберите шаблон **”Blank”** от GitHub. Этот шаблон предоставляет чистое окружение, в котором вы сможете настроить все необходимые пакеты и инструменты для работы с вашим скриптом.
+    ОТВЕТ
+
+Выберите шаблон **”Blank”** от GitHub. Этот шаблон предоставляет чистое окружение,
+ в котором вы сможете настроить все необходимые пакеты и инструменты для работы с вашим скриптом.
 
 ### Дальнейшие шаги:
 
@@ -60,15 +63,21 @@ USER $USERNAME
 1. **Создайте Codespace** из вашего репозитория, используя шаблон “Blank”.
 2. **Запустите ваш скрипт** в терминале Codespaces.
 
-Этот подход позволит вам настроить и использовать все необходимые инструменты для работы с вашим скриптом в облаке, обеспечивая гибкость и удобство работы.
- 
-Для размещения и запуска вашего скрипта в GitHub Codespaces, вам подойдет шаблон, который включает в себя поддержку Python и возможностей для работы с браузерами через Selenium. Вам следует выбрать шаблон, который предоставляет следующее:
+Этот подход позволит вам настроить и использовать все необходимые инструменты для
+ работы с вашим скриптом в облаке, обеспечивая гибкость и удобство работы.
+
+    ОТВЕТ
+
+Для размещения и запуска вашего скрипта в GitHub Codespaces, вам подойдет шаблон,
+ который включает в себя поддержку Python и возможностей для работы с браузерами через Selenium.
+  Вам следует выбрать шаблон, который предоставляет следующее:
 
 1. **Python среду** с необходимыми библиотеками.
 2. **Установку и конфигурацию ChromeDriver**.
 3. **Поддержку для запуска браузеров в контейнере**.
 
-Для вашего случая можно использовать шаблон Python, дополнительно настроенный для Selenium. Вот шаги для создания и настройки вашего репозитория для работы в GitHub Codespaces:
+Для вашего случая можно использовать шаблон Python, дополнительно настроенный для Selenium.
+ Вот шаги для создания и настройки вашего репозитория для работы в GitHub Codespaces:
 
 1. **Создайте новый репозиторий** на GitHub или используйте существующий.
 2. **Добавьте необходимые файлы конфигурации** для Codespaces:
@@ -132,13 +141,15 @@ USER $USERNAME
 Загрузите ваш Python скрипт и другие необходимые файлы в ваш репозиторий.
 
 ### 3. Настройка работы с Codespaces
-Теперь ваш репозиторий готов к использованию в GitHub Codespaces. Когда вы создадите Codespace из этого репозитория, будет автоматически настроена окружение с Python, Selenium, Google Chrome и ChromeDriver.
+Теперь ваш репозиторий готов к использованию в GitHub Codespaces. Когда вы создадите Codespace из этого репозитория,
+ будет автоматически настроена окружение с Python, Selenium, Google Chrome и ChromeDriver.
 
 Для запуска скрипта в Codespaces:
 1. Создайте новый Codespace из вашего репозитория.
 2. Запустите терминал в Codespaces и выполните ваш скрипт.
 
-Такой подход обеспечит возможность легкого развертывания и запуска вашего скрипта на GitHub Codespaces без необходимости настройки на локальной машине.
+Такой подход обеспечит возможность легкого развертывания и запуска вашего скрипта на GitHub
+ Codespaces без необходимости настройки на локальной машине.
 https://learn.microsoft.com/ru-ru/shows/pure-virtual-cpp-2024/debugging-gui-applications-in-a-github-codespace
 
 1.	Create a Codespace
@@ -153,4 +164,177 @@ RepLit. ...
 Koding. ...
 CodePen.
  
+    ЗАПРОС
+Улучши инструкцию выше,  используй лучшие практики,
+ скрипт находится в другом репозитория - настрой гит  сабмодули,
+  добавь запуск скрипта sh second_repo/script.py,
+   а также добавь в инструкцию по настройке  возможности коммитить во второй репозиторий из кодеспейса
 
+    ОТВЕТ
+Вот улучшенная инструкция, включающая настройку Git-сабмодулей,
+ запуск вашего скрипта и возможность коммитить во второй репозиторий из Codespaces.
+  Мы будем использовать Git-сабмодули, чтобы включить второй репозиторий в ваш основной репозиторий.
+
+### Шаг 1: Создайте новый репозиторий и добавьте Git-сабмодули
+
+1. **Создайте новый репозиторий** на GitHub или используйте существующий.
+2. **Добавьте сабмодуль** с вашим скриптом:
+
+```bash
+git submodule add <URL_вашего_второго_репозитория> second_repo
+git submodule update —init —recursive
+```
+
+### Шаг 2: Настройка `.devcontainer` директории
+
+Создайте директорию `.devcontainer` в корне вашего репозитория и добавьте туда следующие файлы:
+
+#### `.devcontainer/devcontainer.json`
+```json
+{
+  «name»: «Python 3 & Selenium»,
+  «image»: «mcr.microsoft.com/devcontainers/python:3.9»,
+  «features»: {
+    «ghcr.io/devcontainers/features/docker-in-docker:1»: {}
+  },
+  «customizations»: {
+    «vscode»: {
+      «extensions»: [
+        «ms-python.python»,
+        «ms-python.vscode-pylance»
+      ]
+    }
+  },
+  «postCreateCommand»: «pip install selenium && sudo apt-get update && sudo apt-get install -y unzip && git submodule update —init —recursive»,
+  «mounts»: [
+    «source=/dev/shm,target=/dev/shm,type=bind»
+  ]
+}
+```
+
+#### `.devcontainer/Dockerfile`
+```dockerfile
+FROM mcr.microsoft.com/devcontainers/python:3.9
+
+# Install Chrome
+RUN apt-get update && apt-get install -y wget gnupg2
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
+RUN sh -c ‘echo «deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main» >> /etc/apt/sources.list.d/google-chrome.list’
+RUN apt-get update && apt-get install -y google-chrome-stable
+
+# Install ChromeDriver
+RUN CHROME_VERSION=$(google-chrome —version | awk ‘{print $3}’) && \
+    CHROMEDRIVER_VERSION=$(wget -qO- «https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION») && \
+    wget -q «https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip» && \
+    unzip chromedriver_linux64.zip && \
+    mv chromedriver /usr/local/bin/ && \
+    rm chromedriver_linux64.zip
+
+# Add a non-root user for Codespaces
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+RUN groupadd —gid $USER_GID $USERNAME \
+    && useradd -s /bin/bash —uid $USER_UID —gid $USER_GID -m $USERNAME
+
+USER $USERNAME
+```
+
+### Шаг 3: Настройка SSH для коммитов во второй репозиторий
+Для того чтобы коммитить изменения во второй репозиторий, вам нужно настроить SSH-ключи:
+
+1. **Создайте SSH-ключ** в Codespaces:
+
+```bash
+
+ssh-keygen -t rsa -b 4096 -C «your_email@example.com»
+
+```
+
+2. **Добавьте публичный ключ** в настройки SSH вашего второго репозитория на GitHub.
+ Скопируйте содержимое файла `~/.ssh/id_rsa.pub` и добавьте его в разделе «SSH and GPG keys» вашего аккаунта на GitHub.
+
+3. **Настройте SSH-агент** в Codespaces:
+
+```bash
+
+eval «$(ssh-agent -s)»
+
+ssh-add ~/.ssh/id_rsa
+
+```
+
+### Шаг 4: Запуск скрипта и коммит изменений
+Создайте скрипт для запуска вашего основного скрипта и коммита изменений.
+
+#### `run_and_commit.sh`
+
+```bash
+
+#!/bin/bash
+
+# Запуск скрипта
+
+python3 second_repo/script.py
+# Перейти в сабмодуль
+
+cd second_repo
+# Добавить и закоммитить изменения
+
+git add .
+
+git commit -m «Automated commit from Codespaces»
+
+git push origin main
+
+```
+
+### Шаг 5: Настройка запуска скрипта при старте Codespace
+
+Добавьте в `.devcontainer/devcontainer.json` команду для запуска вашего скрипта:
+
+```json
+
+{
+
+  «name»: «Python 3 & Selenium»,
+
+  «image»: «mcr.microsoft.com/devcontainers/python:3.9»,
+
+  «features»: {
+
+    «ghcr.io/devcontainers/features/docker-in-docker:1»: {}
+
+  },
+
+  «customizations»: {
+
+    «vscode»: {
+
+      «extensions»: [
+
+        «ms-python.python»,
+
+        «ms-python.vscode-pylance»
+
+      ]
+
+    }
+
+  },
+
+  «postCreateCommand»: «pip install selenium && sudo apt-get update && sudo apt-get install -y unzip && git submodule update —init —recursive && ./run_and_commit.sh»,
+
+  «mounts»: [
+
+    «source=/dev/shm,target=/dev/shm,type=bind»
+
+  ]
+
+}
+
+```
+
+Теперь, когда вы создадите новый Codespace из вашего репозитория, автоматически установятся все необходимые зависимости,
+ запустится ваш скрипт и закоммитятся изменения во второй репозиторий.
