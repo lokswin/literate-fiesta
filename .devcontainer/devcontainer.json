@@ -1,0 +1,20 @@
+{
+  "name": "Python 3 & Selenium",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2.11.0": {}
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ]
+    }
+  },
+  "postCreateCommand": "pip install selenium && sudo apt-get update && sudo apt-get install -y unzip",
+  "mounts": [
+    "source=/dev/shm,target=/dev/shm,type=bind"
+  ]
+}
