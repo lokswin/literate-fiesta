@@ -1,3 +1,6 @@
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+
+
     ОТВЕТ
 
 Выберите шаблон **”Blank”** от GitHub. Этот шаблон предоставляет чистое окружение,

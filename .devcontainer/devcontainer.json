@@ -13,7 +13,7 @@
       ]
     }
   },
-  "postCreateCommand": "pip install selenium && sudo apt-get update && sudo apt-get install -y unzip",
+  "postCreateCommand": "pip install selenium && sudo apt-get update && sudo apt-get install -y unzip && git submodule update --init --recursive",
   "mounts": [
     "source=/dev/shm,target=/dev/shm,type=bind"
   ]
