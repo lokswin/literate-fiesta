@@ -1,26 +1,43 @@
-FROM mcr.microsoft.com/devcontainers/python:3.12
+# Use a smaller base image
+FROM python:3.12-alpine
 
-# Install Chrome
-RUN apt-get update && apt-get install -y wget gnupg2 \
-    && wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list' \
-    && apt-get update && apt-get install -y google-chrome-stable \
-    && rm -rf /var/lib/apt/lists/*
+# Install necessary dependencies
+RUN apk update && apk add --no-cache \
+    bash \
+    git \
+    chromium \
+    chromium-chromedriver \
+    wget \
+    curl \
+    ca-certificates \
+    && rm -rf /var/cache/apk/*
 
-# Install ChromeDriver
-RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}') \
-    && CHROMEDRIVER_VERSION=$(wget -qO- "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*}") \
-    && wget -q "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" \
-    && unzip chromedriver_linux64.zip \
-    && mv chromedriver /usr/local/bin/ \
-    && rm chromedriver_linux64.zip
+# Install Python packages
+RUN pip install --no-cache-dir selenium requests
 
 # Add a non-root user for Codespaces
 ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME
+RUN addgroup -g $USER_GID $USERNAME \
+    && adduser -D -s /bin/bash -u $USER_UID -G $USERNAME $USERNAME
 
 USER $USERNAME
+
+# Set Chrome options for Selenium
+ENV CHROME_BIN=/usr/bin/chromium-browser \
+    CHROME_DRIVER=/usr/bin/chromedriver
+
+# Create a working directory
+WORKDIR /home/$USERNAME/app
+
+# Clone the repository and initialize submodules
+RUN git clone --recurse-submodules https://github.com/lokswin/literate-fiesta . \
+    && git submodule update --init --recursive
+
+# Optional: Copy the script to the working directory
+# COPY external_repo/your_script.py .
+
+# CMD to run your script
+# CMD ["python", "external_repo/your_script.py"]
