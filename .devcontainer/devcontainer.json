@@ -14,7 +14,7 @@
       ]
     }
   },
-  "postCreateCommand": "pip install selenium && git submodule update --init --recursive",
+  "postCreateCommand": "pip install selenium && gh auth login && git submodule update --init --recursive",
   "mounts": [
     "source=/dev/shm,target=/dev/shm,type=bind"
   ]
